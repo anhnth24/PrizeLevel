@@ -101,5 +101,7 @@ namespace PrizeLevel
         {
             File.AppendAllText(String.Format("{0}\\{1}.txt", Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)), "Prize Level - " + DateTime.Now.ToString("yyyy-MM-dd")), String.Format("{0}: {1}\r\n", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), msg));
         }
+
+        
     }
 }

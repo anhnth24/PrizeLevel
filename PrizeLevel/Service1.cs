@@ -23,7 +23,9 @@ namespace PrizeLevel
         public void OnDebug()
         {
             //debug
-            Action.SelectionToPrizeLevel();
+            //Action.SelectionToPrizeLevel_Game645("20210101");
+            //Action.SelectionToPrizeLevel_Game655("20210603");
+            Action.SelectionToPrizeLevel_Game3DPro("20211221");
         }
 
         protected override void OnStart(string[] args)
