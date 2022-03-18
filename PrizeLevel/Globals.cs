@@ -102,6 +102,37 @@ namespace PrizeLevel
             File.AppendAllText(String.Format("{0}\\{1}.txt", Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)), "Prize Level - " + DateTime.Now.ToString("yyyy-MM-dd")), String.Format("{0}: {1}\r\n", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), msg));
         }
 
-        
+        public static bool isDuplicate(List<string> strArray)
+        {
+            if (strArray.GroupBy(n => n).Any(c => c.Count() > 1))
+                return true;
+            else
+                return false;
+        }
+
+        public static string CheckTypeKeno(string combination)
+        {
+            if (combination == "84")
+                return "Upper";
+            if (combination == "85")
+                return "Lower";
+            if (combination == "88")
+                return "Equal Upper/Lower";
+
+            if (combination == "86")
+                return "Even";
+            if (combination == "87")
+                return "Odd";
+            if (combination == "89")
+                return "Equal Even/Odd";
+            
+            if (combination == "90")
+                return "Even 11-12";
+            if (combination == "91")
+                return "Odd 11-12";
+
+            else
+                return "Selected";
+        }
     }
 }

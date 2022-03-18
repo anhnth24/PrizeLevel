@@ -93,7 +93,6 @@ namespace PrizeLevel
             }
 
         }
-
         public static void SelectionToPrizeLevel_Game655(string Date)
         {
             string[] Bingo655;
@@ -207,7 +206,6 @@ namespace PrizeLevel
             }
 
         }
-
         public static void SelectionToPrizeLevel_Game3DPro(string Date)
         {
             string[] Bingo1st;
@@ -244,228 +242,142 @@ namespace PrizeLevel
                 Bingo2nd = dtBingo3DPro.Rows[1]["NUMBER"].ToString().Split(' ');
                 Bingo3rd = dtBingo3DPro.Rows[2]["NUMBER"].ToString().Split(' ');
                 BingoEnc = dtBingo3DPro.Rows[3]["NUMBER"].ToString().Split(' ');
-                List<string> lst = new List<string>();
-                lst.AddRange(Bingo1st);
-                lst.AddRange(Bingo2nd);
-                lst.AddRange(Bingo3rd);
-                lst.AddRange(BingoEnc);
-                lst.ToArray();
 
-                List<string> lst2 = new List<string>();
-                lst2.AddRange(Bingo2nd);
-                lst2.AddRange(Bingo3rd);
-                lst2.AddRange(BingoEnc);
-                lst2.ToArray();
 
                 for (int i = 0; i < dtSelections3DPro.Rows.Count; i++)
                 {
+                    List<string> lst = new List<string>();
+                    lst.AddRange(Bingo1st);
+                    lst.AddRange(Bingo2nd);
+                    lst.AddRange(Bingo3rd);
+                    lst.AddRange(BingoEnc);
+                    lst.ToList();
+
+                    List<string> lst2 = new List<string>();
+                    lst2.AddRange(Bingo2nd);
+                    lst2.AddRange(Bingo3rd);
+                    lst2.AddRange(BingoEnc);
+                    lst2.ToList();
                     Selections3DPro = dtSelections3DPro.Rows[i]["COMBINATION"].ToString().Split(' ');
-                    // Giải đặc biệt
+                    // Giải 1
                     if (Array.IndexOf(Bingo1st, Selections3DPro[0].ToString()) == 0 && Array.IndexOf(Bingo1st, Selections3DPro[1].ToString()) == 1)
                     {
-                        matched1st++;
+                        matched1st = 1;
+                        lst.Remove(Bingo1st[0]);
+                        lst.Remove(Bingo1st[1]);
                     }
-                    // Giải phụ đặc biệt
+                    // Giải 2
                     if (Array.IndexOf(Bingo1st, Selections3DPro[0].ToString()) == 1 && Array.IndexOf(Bingo1st, Selections3DPro[1].ToString()) == 0)
                     {
-                        matched2nd++;
+                        matched2nd = 1;
                     }
-                    // Giải Nhất
-                    for (int j = 0; j < Selections3DPro.Length; j++)
-                    {
+                    // Giải 3
 
-                        if (Bingo2nd.Any(str => str.Contains(Selections3DPro[j])) && Selections3DPro[0].ToString() != Selections3DPro[1].ToString())
-                        {
-                            matched3rd++; // =2
-                        }
-                    }
-                    // Giải nhì
-                    for (int j = 0; j < Selections3DPro.Length; j++)
+                    if (Bingo2nd.Any(str => str.Contains(Selections3DPro[0])) && Bingo2nd.Any(str => str.Contains(Selections3DPro[1])) && Selections3DPro[0].ToString() != Selections3DPro[1].ToString())
                     {
+                        matched3rd = 1; // =2
+                        lst.Remove(Bingo2nd[0]);
+                        lst.Remove(Bingo2nd[1]);
+                    }
 
-                        if (Bingo3rd.Any(str => str.Contains(Selections3DPro[j])) && Selections3DPro[0].ToString() != Selections3DPro[1].ToString())
-                        {
-                            matched4th++; // =2
-                        }
-                    }
-                    // Giải ba
-                    for (int j = 0; j < Selections3DPro.Length; j++)
-                    {
+                    // Giải Encou
 
-                        if (BingoEnc.Any(str => str.Contains(Selections3DPro[j])) && Selections3DPro[0].ToString() != Selections3DPro[1].ToString())
-                        {
-                            matched5th++; // =2
-                        }
-                    }
-                    // Giải tư
-                    for (int j = 0; j < Selections3DPro.Length; j++)
+                    if (Bingo3rd.Any(str => str.Contains(Selections3DPro[0])) && Bingo3rd.Any(str => str.Contains(Selections3DPro[1])) && Selections3DPro[0].ToString() != Selections3DPro[1].ToString())
                     {
-                        if (lst.Any(str => str.Contains(Selections3DPro[j])) && Selections3DPro[0].ToString() != Selections3DPro[1].ToString())
-                        {
-                            matched6th++; // =2
-                        }
+                        matched4th = 1; // =2
+                        lst.Remove(Bingo3rd[0]);
+                        lst.Remove(Bingo3rd[1]);
                     }
-                    // Giải năm
-                    if(Bingo1st.Any(str => str.Contains(Selections3DPro[0])) || Bingo1st.Any(str => str.Contains(Selections3DPro[1])))
+                    // Giải 4
+
+                    if (BingoEnc.Any(str => str.Contains(Selections3DPro[0])) && BingoEnc.Any(str => str.Contains(Selections3DPro[1])) && Selections3DPro[0].ToString() != Selections3DPro[1].ToString())
                     {
-                        if((Selections3DPro[0].ToString() != Selections3DPro[1].ToString()))
+                        matched5th = 1; // =2
+                        lst.Remove(BingoEnc[0]);
+                        lst.Remove(BingoEnc[1]);
+                    }
+                    // Giải 5
+
+                    if (//!Globals.isDuplicate(lst) &&
+                            lst.Any(str => str.Contains(Selections3DPro[0])) &&
+                            lst.Any(str => str.Contains(Selections3DPro[1])) &&
+                            Selections3DPro[0].ToString() != Selections3DPro[1].ToString()
+                            )
+                    {
+                        matched6th = 1; // =2
+                        Globals.WriteLog(Selections3DPro[0].ToString() + ' ' + Selections3DPro[1].ToString() + ' ' + dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
+                    }
+
+                    // Giải 6
+                    if (Bingo1st.Any(str => str.Contains(Selections3DPro[0])) || Bingo1st.Any(str => str.Contains(Selections3DPro[1])))
+                    {
+                        if ((Selections3DPro[0].ToString() != Selections3DPro[1].ToString()))
                             matched7th = 1;
                         if ((Selections3DPro[0].ToString() == Selections3DPro[1].ToString()))
                             matched7th = 2;
                     }
-                    //for (int j = 0; j < Selections3DPro.Length; j++)
-                    //{
-
-                    //    if (Bingo1st.Any(str => str.Contains(Selections3DPro[j])))
-                    //    {
-                    //        if((Selections3DPro[0].ToString() != Selections3DPro[1].ToString()))
-                    //            matched7th = 1; // =1
-                    //        if ((Selections3DPro[0].ToString() == Selections3DPro[1].ToString()))
-                    //            matched7th = 2; // =1
-                    //    }
-                    //}
-                    // Giải sáu
+                    // Giải 7
                     if (lst2.Any(str => str.Contains(Selections3DPro[0].ToString()) || lst2.Any(str1 => str1.Contains(Selections3DPro[1].ToString()))))
                     {
-                        matched8th++; // =1
+                        matched8th = 1;
+                        if (lst2.Any(str => str.Contains(Selections3DPro[0].ToString()) && lst2.Any(str1 => str1.Contains(Selections3DPro[1].ToString()))))
+                            //if (Selections3DPro[1].ToString() == Selections3DPro[0].ToString())
+                            matched8th = 2;
                     }
 
 
-                    /////=============
+                    /////=============/////=============/////=============GET RESULT=============/////=============/////=============/////=============/////
                     if (matched1st < 1 && matched2nd < 1 && matched3rd < 2 && matched4th < 2 && matched5th < 2 && matched6th < 2 && matched7th < 1 && matched8th < 1)
                     {
                         nonprize += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        
-                    }
 
-                    if (matched1st == 1)// giải đặc biệt
+                    }
+                    // giải 1
+                    if (matched1st == 1)
                     {
                         prize1st += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        prize7th ++;
-                        //prize6th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //prize7th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //prize8th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //matched1st = 0;
-                        //matched2nd = 0;
-                        //matched3rd = 0;
-                        //matched4th = 0;
-                        //matched5th = 0;
-                        //matched6th = 0;
-                        //matched7th = 0;
-                        //matched8th = 0;
+                        prize7th++;
                     }
-                    if (matched2nd == 1)// giải phụ đặc biệt
+                    // giải 2
+                    if (matched2nd == 1)
                     {
                         prize2nd += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //prize6th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //prize7th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //prize8th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //matched1st = 0;
-                        //matched2nd = 0;
-                        //matched3rd = 0;
-                        //matched4th = 0;
-                        //matched5th = 0;
-                        //matched6th = 0;
-                        //matched7th = 0;
-                        //matched8th = 0;
                     }
-                    if (matched3rd == 2)// giải nhất
+                    // giải 3
+                    if (matched3rd == 1)
                     {
                         prize3rd += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //prize6th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //prize8th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //matched1st = 0;
-                        //matched2nd = 0;
-                        //matched3rd = 0;
-                        //matched4th = 0;
-                        //matched5th = 0;
-                        //matched6th = 0;
-                        //matched7th = 0;
-                        //matched8th = 0;
                     }
-                    if (matched4th == 2)// giải nhì
+                    // giải Encou
+                    if (matched4th == 1)
                     {
                         prize4th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //prize6th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //prize8th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //matched1st = 0;
-                        //matched2nd = 0;
-                        //matched3rd = 0;
-                        //matched4th = 0;
-                        //matched5th = 0;
-                        //matched6th = 0;
-                        //matched7th = 0;
-                        //matched8th = 0;
                     }
-                    if (matched5th == 2)// giải ba
+                    // giải 4
+                    if (matched5th == 1)
                     {
                         prize5th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //prize6th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //prize8th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //matched1st = 0;
-                        //matched2nd = 0;
-                        //matched3rd = 0;
-                        //matched4th = 0;
-                        //matched5th = 0;
-                        //matched6th = 0;
-                        //matched7th = 0;
-                        //matched8th = 0;
                     }
-                    if (matched6th == 2)// giải tư
+                    // giải 5
+                    if (matched6th == 1)
                     {
                         prize6th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //for (int j = 0; j < Selections3DPro.Length; j++)
-                        //{
-                        //    if (Bingo1st.Any(str => str.Contains(Selections3DPro[j])) && Selections3DPro[0].ToString() != Selections3DPro[1].ToString())
-                        //    {
-                        //        prize7th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //    }
-                        //}
-                        //matched1st = 0;
-                        //matched2nd = 0;
-                        //matched3rd = 0;
-                        //matched4th = 0;
-                        //matched5th = 0;
-                        //matched6th = 0;
-                        //matched7th = 0;
-                        //matched8th = 0;
                     }
-                    if (matched7th == 1)// giải năm
+                    // giải 6
+                    if (matched7th == 1)
                     {
                         prize7th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //matched1st = 0;
-                        //matched2nd = 0;
-                        //matched3rd = 0;
-                        //matched4th = 0;
-                        //matched5th = 0;
-                        //matched6th = 0;
-                        //matched7th = 0;
-                        //matched8th = 0;
                     }
-                    if (matched7th == 2)// giải năm
+                    if (matched7th == 2)
                     {
                         prize7th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString()) * 2;
-                        //matched1st = 0;
-                        //matched2nd = 0;
-                        //matched3rd = 0;
-                        //matched4th = 0;
-                        //matched5th = 0;
-                        //matched6th = 0;
-                        //matched7th = 0;
-                        //matched8th = 0;
                     }
-                    if (matched8th > 0)// giải sáu
-                    {
+                    // giải 7
+                    if (matched8th == 1)
                         prize8th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString());
-                        //matched1st = 0;
-                        //matched2nd = 0;
-                        //matched3rd = 0;
-                        //matched4th = 0;
-                        //matched5th = 0;
-                        //matched6th = 0;
-                        //matched7th = 0;
-                        //matched8th = 0;
-                    }
+                    if (matched8th == 2)
+                        prize8th += int.Parse(dtSelections3DPro.Rows[i]["QUANTITY"].ToString()) + 1;
+
                     matched1st = 0;
                     matched2nd = 0;
                     matched3rd = 0;
@@ -484,6 +396,435 @@ namespace PrizeLevel
                 Globals.WriteLog("Prize 5: " + prize6th.ToString());
                 Globals.WriteLog("Prize 6: " + prize7th.ToString());
                 Globals.WriteLog("Prize 7: " + prize8th.ToString());
+            }
+
+        }
+        public static void SelectionToPrizeLevel_GameKeno(string Date)
+        {
+            string CombinationType;
+            #region Loại giải thưởng
+
+
+
+            #endregion
+            // Kết quả quay theo kỳ
+            DataTable tbDraw = Globals.QueryToDataTable(Query.getKenoDraw + "'" + Date + "'");
+            if (tbDraw.Rows.Count > 0)
+            {
+                for (int i = 0; i < tbDraw.Rows.Count; i++)
+                {
+                    int c1_1_20 = 0;
+
+                    int c2_2_20 = 0;
+
+                    int c3_2_20 = 0;
+                    int c3_3_20 = 0;
+
+                    int c4_2_20 = 0;
+                    int c4_3_20 = 0;
+                    int c4_4_20 = 0;
+
+                    int c5_3_20 = 0;
+                    int c5_4_20 = 0;
+                    int c5_5_20 = 0;
+
+                    int c6_3_20 = 0;
+                    int c6_4_20 = 0;
+                    int c6_5_20 = 0;
+                    int c6_6_20 = 0;
+
+                    int c7_3_20 = 0;
+                    int c7_4_20 = 0;
+                    int c7_5_20 = 0;
+                    int c7_6_20 = 0;
+                    int c7_7_20 = 0;
+
+                    int c8_0_20 = 0;
+                    int c8_4_20 = 0;
+                    int c8_5_20 = 0;
+                    int c8_6_20 = 0;
+                    int c8_7_20 = 0;
+                    int c8_8_20 = 0;
+
+                    int c9_0_20 = 0;
+                    int c9_4_20 = 0;
+                    int c9_5_20 = 0;
+                    int c9_6_20 = 0;
+                    int c9_7_20 = 0;
+                    int c9_8_20 = 0;
+                    int c9_9_20 = 0;
+
+                    int c10_0_20 = 0;
+                    int c10_5_20 = 0;
+                    int c10_6_20 = 0;
+                    int c10_7_20 = 0;
+                    int c10_8_20 = 0;
+                    int c10_9_20 = 0;
+                    int c10_10_20 = 0;
+
+                    int U_11_12 = 0;
+                    int U_13 = 0;
+                    int EqualUL = 0;
+                    int L_11_12 = 0;
+                    int L_13 = 0;
+
+                    int E_13_14 = 0;
+                    int E_15 = 0;
+                    int E_11_12 = 0;
+                    int EqualOE = 0;
+                    int O_11_12 = 0;
+                    int O_13_14 = 0;
+                    int O_15 = 0;
+                    string DrawId = tbDraw.Rows[i]["DRAWID"].ToString();
+
+                    string[] BingoKeno;
+                    string[] SelectionsKeno;
+
+                    DataTable tbBingoKeno = Globals.QueryToDataTable("SELECT TOP 1 NUMBER FROM CORE_DL WHERE  LIATYPE = 5 AND DRAWDATE =" + "'" + Date + "' AND DRAWID = " + "'" + DrawId + "'");
+                    DataTable tbSelectionsKeno = Globals.QueryToDataTable("SELECT COMBINATION,QUANTITY FROM CORE_DCS_KENO WHERE CAST('20'|| RIGHT(FILENAME,6) AS DATE) =" + "'" + Date + "' AND CAST(SUBSTRING(FILENAME,24,7) AS VARCHAR(10)) =" + "'" + DrawId + "'");
+
+                    BingoKeno = tbBingoKeno.Rows[0]["NUMBER"].ToString().Split(' ');
+                    for (int j = 0; j < tbSelectionsKeno.Rows.Count; j++)//
+                    {
+                        CombinationType = Globals.CheckTypeKeno(tbSelectionsKeno.Rows[j]["COMBINATION"].ToString());
+                        switch (CombinationType)
+                        {
+                            case "Selected":
+                                SelectionsKeno = tbSelectionsKeno.Rows[j]["COMBINATION"].ToString().Split(',');
+                                if (SelectionsKeno.Length == 1)
+                                {
+                                    if (BingoKeno.Any(str => str.Contains(SelectionsKeno[0].PadLeft(2, '0'))))
+                                        c1_1_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                }
+                                if (SelectionsKeno.Length == 2)
+                                {
+                                    int matched = 0;
+                                    for (int z = 0; z < 2; z++)
+                                    {
+                                        if (BingoKeno.Any(str => str.Contains(SelectionsKeno[z].PadLeft(2, '0'))))
+                                            matched++;
+
+                                    }
+                                    if (matched == 2)
+                                        c2_2_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+
+                                }
+                                if (SelectionsKeno.Length == 3)
+                                {
+                                    int matched = 0;
+                                    for (int z = 0; z < 3; z++)
+                                    {
+                                        if (BingoKeno.Any(str => str.Contains(SelectionsKeno[z].PadLeft(2, '0'))))
+                                            matched++;
+
+                                    }
+                                    if (matched == 2)
+                                        c3_2_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 3)
+                                        c3_3_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                }
+                                if (SelectionsKeno.Length == 4)
+                                {
+                                    int matched = 0;
+                                    for (int z = 0; z < 4; z++)
+                                    {
+                                        if (BingoKeno.Any(str => str.Contains(SelectionsKeno[z].PadLeft(2, '0'))))
+                                            matched++;
+
+                                    }
+                                    if (matched == 2)
+                                        c4_2_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 3)
+                                        c4_3_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 4)
+                                        c4_3_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                }
+                                if (SelectionsKeno.Length == 5)
+                                {
+                                    int matched = 0;
+                                    for (int z = 0; z < 5; z++)
+                                    {
+                                        if (BingoKeno.Any(str => str.Contains(SelectionsKeno[z].PadLeft(2, '0'))))
+                                            matched++;
+
+                                    }
+                                    if (matched == 3)
+                                        c5_3_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 4)
+                                        c5_4_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 5)
+                                        c5_5_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                }
+                                if (SelectionsKeno.Length == 6)
+                                {
+                                    int matched = 0;
+                                    for (int z = 0; z < 6; z++)
+                                    {
+                                        if (BingoKeno.Any(str => str.Contains(SelectionsKeno[z].PadLeft(2, '0'))))
+                                            matched++;
+
+                                    }
+                                    if (matched == 3)
+                                        c6_3_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 4)
+                                        c6_4_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 5)
+                                        c6_5_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 6)
+                                        c6_6_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                }
+                                if (SelectionsKeno.Length == 7)
+                                {
+                                    int matched = 0;
+                                    for (int z = 0; z < 7; z++)
+                                    {
+                                        if (BingoKeno.Any(str => str.Contains(SelectionsKeno[z].PadLeft(2, '0'))))
+                                            matched++;
+
+                                    }
+                                    if (matched == 3)
+                                        c7_3_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 4)
+                                        c7_4_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 5)
+                                        c7_5_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 6)
+                                        c7_6_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 7)
+                                        c7_7_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                }
+                                if (SelectionsKeno.Length == 8)
+                                {
+                                    int matched = 0;
+                                    for (int z = 0; z < 8; z++)
+                                    {
+                                        if (BingoKeno.Any(str => str.Contains(SelectionsKeno[z].PadLeft(2, '0'))))
+                                            matched++;
+
+                                    }
+                                    if (matched == 0)
+                                        c8_0_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 4)
+                                        c8_4_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 5)
+                                        c8_5_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 6)
+                                        c8_6_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 7)
+                                        c8_7_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 8)
+                                        c8_8_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                }
+                                if (SelectionsKeno.Length == 9)
+                                {
+                                    int matched = 0;
+                                    for (int z = 0; z < 9; z++)
+                                    {
+                                        if (BingoKeno.Any(str => str.Contains(SelectionsKeno[z].PadLeft(2, '0'))))
+                                            matched++;
+
+                                    }
+                                    if (matched == 0)
+                                        c9_0_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 4)
+                                        c9_4_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 5)
+                                        c9_5_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 6)
+                                        c9_6_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 7)
+                                        c9_7_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 8)
+                                        c9_8_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 9)
+                                        c9_9_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                }
+                                if (SelectionsKeno.Length == 10)
+                                {
+                                    int matched = 0;
+                                    for (int z = 0; z < 10; z++)
+                                    {
+                                        if (BingoKeno.Any(str => str.Contains(SelectionsKeno[z].PadLeft(2, '0'))))
+                                            matched++;
+
+                                    }
+                                    if (matched == 0)
+                                        c10_0_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 5)
+                                        c10_5_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 6)
+                                        c10_6_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 7)
+                                        c10_7_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 8)
+                                        c10_8_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 9)
+                                        c10_9_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                    if (matched == 10)
+                                        c10_10_20 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                }
+                                break;
+                            case "Upper":
+                                int matchedUpper = 0;
+                                for (int z = 0; z < BingoKeno.Length; z++)
+                                {
+                                    if (int.Parse(BingoKeno[z].ToString()) >= 41)
+                                        matchedUpper++;
+                                }
+
+                                if (matchedUpper == 11 || matchedUpper == 12)
+                                    U_11_12 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                if (matchedUpper > 13)
+                                    U_13 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                break;
+                            case "Lower":
+                                int matchedLower = 0;
+                                for (int z = 0; z < BingoKeno.Length; z++)
+                                {
+                                    if (int.Parse(BingoKeno[z].ToString()) < 41)
+                                        matchedLower++;
+                                }
+                                if (matchedLower == 11 || matchedLower == 12)
+                                    L_11_12 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                if (matchedLower > 13)
+                                    L_13 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                break;
+                            case "Equal Upper/Lower":
+                                int matchedUL = 0;
+                                for (int z = 0; z < BingoKeno.Length; z++)
+                                {
+                                    if (int.Parse(BingoKeno[z].ToString()) < 41)
+                                        matchedUL++;
+                                }
+                                if (matchedUL == 10)
+                                    EqualUL += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                break;
+                            case "Even":
+                                int matchedEven = 0;
+                                for (int z = 0; z < BingoKeno.Length; z++)
+                                {
+                                    if (int.Parse(BingoKeno[z].ToString()) % 2==0)
+                                        matchedEven++;
+                                }
+                                if (matchedEven == 13 || matchedEven == 14)
+                                    E_13_14 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                if (matchedEven >= 15)
+                                    E_15 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                break;
+                            case "Odd":
+                                int matchedOdd = 0;
+                                for (int z = 0; z < BingoKeno.Length; z++)
+                                {
+                                    if (int.Parse(BingoKeno[z].ToString()) % 2 != 0)
+                                        matchedOdd++;
+                                }
+                                if (matchedOdd == 13 || matchedOdd == 14)
+                                    O_13_14 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                if (matchedOdd >= 15)
+                                    O_15 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                break;
+                            case "Equal Even/Odd":
+                                int matchedEV = 0;
+                                for (int z = 0; z < BingoKeno.Length; z++)
+                                {
+                                    if (int.Parse(BingoKeno[z].ToString()) % 2 == 0)
+                                        matchedEV++;
+                                }
+                                if (matchedEV == 10)
+                                    EqualOE += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                break;
+                            case "Even 11-12":
+                                int matchedEven1112 = 0;
+                                for (int z = 0; z < BingoKeno.Length; z++)
+                                {
+                                    if (int.Parse(BingoKeno[z].ToString()) % 2 == 0)
+                                        matchedEven1112++;
+                                }
+                                if (matchedEven1112 == 11 || matchedEven1112 == 12)
+                                    E_11_12 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                break;
+                            case "Odd 11-12":
+                                int matchedOdd1112 = 0;
+                                for (int z = 0; z < BingoKeno.Length; z++)
+                                {
+                                    if (int.Parse(BingoKeno[z].ToString()) % 2 == 0)
+                                        matchedOdd1112++;
+                                }
+                                if (matchedOdd1112 == 11 || matchedOdd1112 == 12)
+                                    O_11_12 += int.Parse(tbSelectionsKeno.Rows[j]["QUANTITY"].ToString());
+                                break;
+                        }
+
+
+
+                    }
+                    Globals.WriteLog("1 Spot Level 1 " + c1_1_20);
+                    Globals.WriteLog("2 Spot Level 1 " + c2_2_20);
+
+                    Globals.WriteLog("3 Spot Level 1 " + c3_3_20);
+                    Globals.WriteLog("3 Spot Level 2 " + c3_2_20);
+
+                    Globals.WriteLog("4 Spot Level 1 " + c4_4_20);
+                    Globals.WriteLog("4 Spot Level 2 " + c4_3_20);
+                    Globals.WriteLog("4 Spot Level 3 " + c4_2_20);
+
+                    Globals.WriteLog("5 Spot Level 1 " + c5_5_20);
+                    Globals.WriteLog("5 Spot Level 2 " + c5_4_20);
+                    Globals.WriteLog("5 Spot Level 3 " + c5_3_20);
+
+                    Globals.WriteLog("6 Spot Level 1 " + c6_6_20);
+                    Globals.WriteLog("6 Spot Level 2 " + c6_5_20);
+                    Globals.WriteLog("6 Spot Level 3 " + c6_4_20);
+                    Globals.WriteLog("6 Spot Level 4 " + c6_3_20);
+
+                    Globals.WriteLog("7 Spot Level 1 " + c7_7_20);
+                    Globals.WriteLog("7 Spot Level 3 " + c7_5_20);
+                    Globals.WriteLog("7 Spot Level 2 " + c7_6_20);
+                    Globals.WriteLog("7 Spot Level 4 " + c7_4_20);
+                    Globals.WriteLog("7 Spot Level 5 " + c7_3_20);
+
+                    Globals.WriteLog("8 Spot Level 1 " + c8_8_20);
+                    Globals.WriteLog("8 Spot Level 2 " + c8_7_20);
+                    Globals.WriteLog("8 Spot Level 3 " + c8_6_20);
+                    Globals.WriteLog("8 Spot Level 4 " + c8_5_20);
+                    Globals.WriteLog("8 Spot Level 5 " + c8_4_20);
+                    Globals.WriteLog("8 Spot Level 6 " + c8_0_20);
+
+                    Globals.WriteLog("9 Spot Level 1 " + c9_9_20);
+                    Globals.WriteLog("9 Spot Level 2 " + c9_8_20);
+                    Globals.WriteLog("9 Spot Level 3 " + c9_7_20);
+                    Globals.WriteLog("9 Spot Level 4 " + c9_6_20);
+                    Globals.WriteLog("9 Spot Level 5 " + c9_5_20);
+                    Globals.WriteLog("9 Spot Level 6 " + c9_4_20);
+                    Globals.WriteLog("9 Spot Level 7 " + c9_0_20);
+
+                    Globals.WriteLog("10 Spot Level 1 " + c10_10_20);
+                    Globals.WriteLog("10 Spot Level 2 " + c10_9_20);
+                    Globals.WriteLog("10 Spot Level 3 " + c10_8_20);
+                    Globals.WriteLog("10 Spot Level 4 " + c10_7_20);
+                    Globals.WriteLog("10 Spot Level 5 " + c10_6_20);
+                    Globals.WriteLog("10 Spot Level 6 " + c10_5_20);
+                    Globals.WriteLog("10 Spot Level 7 " + c10_0_20);
+
+                    Globals.WriteLog("Upper level 1 " + U_13);
+                    Globals.WriteLog("Upper level 2 " + U_11_12);
+                    Globals.WriteLog("Lower level 1 " + L_11_12);
+                    Globals.WriteLog("Lower level 2 " + L_13);
+
+                    Globals.WriteLog("Even level 1 " + E_15);
+                    Globals.WriteLog("Even level 2 " + E_13_14);
+                    Globals.WriteLog("Odd level 1 " + O_15);
+                    Globals.WriteLog("Odd level 2 " + O_13_14);
+
+                    Globals.WriteLog("Equal UL " + EqualUL);
+                    
+                    Globals.WriteLog("Equal EO " + EqualOE);
+                    Globals.WriteLog("Even 11-12 " + E_11_12);
+                    Globals.WriteLog("Odd 11-12 " + O_11_12);
+
+                    Globals.WriteLog("=============================");
+
+                }
             }
 
         }

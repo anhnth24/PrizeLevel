@@ -25,7 +25,8 @@ namespace PrizeLevel
             //debug
             //Action.SelectionToPrizeLevel_Game645("20210101");
             //Action.SelectionToPrizeLevel_Game655("20210603");
-            Action.SelectionToPrizeLevel_Game3DPro("20211221");
+            //Action.SelectionToPrizeLevel_Game3DPro("20211214");
+            Action.SelectionToPrizeLevel_GameKeno("20211214");
         }
 
         protected override void OnStart(string[] args)
