@@ -134,5 +134,18 @@ namespace PrizeLevel
             else
                 return "Selected";
         }
+        public static string CheckType3D(string combination)
+        {
+            if (combination.Length == 3)
+                return "3D";
+            else
+                return "3D+3D";
+        }
+
+        public static IEnumerable<DateTime> EachDay(DateTime from, DateTime thru)
+        {
+            for (var day = from.Date; day.Date <= thru.Date; day = day.AddDays(1))
+                yield return day;
+        }
     }
 }

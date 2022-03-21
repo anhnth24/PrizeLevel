@@ -31,7 +31,7 @@ namespace PrizeLevel
             Globals.WriteLog("Start Mega 645");
             if (dtBingo645.Rows.Count > 0 && dtSelections645.Rows.Count > 0)
             {
-
+                Globals.WriteLog(Date);
                 Bingo645 = dtBingo645.Rows[0]["NUMBER"].ToString().Split(' ');
                 for (int i = 0; i < dtSelections645.Rows.Count; i++)
                 {
@@ -234,7 +234,7 @@ namespace PrizeLevel
             int prize8th = 0;
             DataTable dtBingo3DPro = Globals.QueryToDataTable(Query.getBingo3DPro + "'" + Date + "'");
             DataTable dtSelections3DPro = Globals.QueryToDataTable(Query.getSelections3DPro + "'" + Date + "'");
-            Globals.WriteLog("Start 3D Pro");
+            Globals.WriteLog(Date);
             if (dtBingo3DPro.Rows.Count > 0 && dtSelections3DPro.Rows.Count > 0)
             {
 
@@ -402,13 +402,9 @@ namespace PrizeLevel
         public static void SelectionToPrizeLevel_GameKeno(string Date)
         {
             string CombinationType;
-            #region Loại giải thưởng
-
-
-
-            #endregion
             // Kết quả quay theo kỳ
             DataTable tbDraw = Globals.QueryToDataTable(Query.getKenoDraw + "'" + Date + "'");
+            Globals.WriteLog(Date);
             if (tbDraw.Rows.Count > 0)
             {
                 for (int i = 0; i < tbDraw.Rows.Count; i++)
@@ -703,7 +699,7 @@ namespace PrizeLevel
                                 int matchedEven = 0;
                                 for (int z = 0; z < BingoKeno.Length; z++)
                                 {
-                                    if (int.Parse(BingoKeno[z].ToString()) % 2==0)
+                                    if (int.Parse(BingoKeno[z].ToString()) % 2 == 0)
                                         matchedEven++;
                                 }
                                 if (matchedEven == 13 || matchedEven == 14)
@@ -817,16 +813,279 @@ namespace PrizeLevel
                     Globals.WriteLog("Odd level 2 " + O_13_14);
 
                     Globals.WriteLog("Equal UL " + EqualUL);
-                    
+
                     Globals.WriteLog("Equal EO " + EqualOE);
                     Globals.WriteLog("Even 11-12 " + E_11_12);
                     Globals.WriteLog("Odd 11-12 " + O_11_12);
 
-                    Globals.WriteLog("=============================");
-
                 }
             }
 
+        }
+        public static void SelectionToPrizeLevel_Game3D(string Date)
+        {
+            string CombinationType;
+            string[] Bingo3D1st;
+            string[] Bingo3D2nd;
+            string[] Bingo3D3rd;
+            string[] Bingo3DEnc;
+            string Selections3D;
+            string[] Selections3D3D;
+
+            int D1st = 0;
+            int D2nd = 0;
+            int D3rd = 0;
+            int DEnc = 0;
+
+            int DD1st = 0;
+            int DD2nd = 0;
+            int DD3rd = 0;
+            int DD4th = 0;
+            int DD5th = 0;
+            int DD6th = 0;
+            int DD7th = 0;
+
+            int DD5thNotDD1st = 0;
+
+            DataTable tbBingo3D = Globals.QueryToDataTable("SELECT NUMBER FROM CORE_DL WHERE IFNULL(NUMBER,'') <> '' AND  LIATYPE = 6 AND DRAWDATE =" + "'" + Date + "' Order by id");
+            DataTable tbSelections3D = Globals.QueryToDataTable(Query.getSelections3D + "'" + Date + "'");
+
+
+            Bingo3D1st = tbBingo3D.Rows[0]["NUMBER"].ToString().Split(' ');
+            Bingo3D2nd = tbBingo3D.Rows[1]["NUMBER"].ToString().Split(' ');
+            Bingo3D3rd = tbBingo3D.Rows[2]["NUMBER"].ToString().Split(' ');
+            Bingo3DEnc = tbBingo3D.Rows[3]["NUMBER"].ToString().Split(' ');
+
+            List<string> lst = new List<string>();
+            lst.AddRange(Bingo3D1st);
+            lst.AddRange(Bingo3D2nd);
+            lst.AddRange(Bingo3D3rd);
+            lst.AddRange(Bingo3DEnc);
+            lst.ToList();
+
+            List<string> lst2 = new List<string>();
+            lst2.AddRange(Bingo3D2nd);
+            lst2.AddRange(Bingo3D3rd);
+            lst2.AddRange(Bingo3DEnc);
+            lst2.ToList();
+
+            Globals.WriteLog(Date);
+            Globals.WriteLog("=========================");
+            for (int j = 0; j < tbSelections3D.Rows.Count; j++)//
+            {
+                CombinationType = Globals.CheckType3D(tbSelections3D.Rows[j]["COMBINATION"].ToString());
+
+                switch (CombinationType)
+                {
+                    case "3D":
+                        Selections3D = tbSelections3D.Rows[j]["COMBINATION"].ToString();
+                        if (Bingo3D1st.Contains(Selections3D))
+                        {
+                            D1st += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString());
+                        }
+                        if (Bingo3D2nd.Contains(Selections3D))
+                        {
+                            D2nd += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString());
+                        }
+                        if (Bingo3D3rd.Contains(Selections3D))
+                        {
+                            D3rd += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString());
+                        }
+                        if (Bingo3DEnc.Contains(Selections3D))
+                        {
+                            DEnc += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString());
+                        }
+                        break;
+
+                    case "3D+3D":
+                        Boolean check1st = false;
+                        Selections3D3D = tbSelections3D.Rows[j]["COMBINATION"].ToString().Split('+');
+
+                        if (Bingo3D1st.Any(str => str.Contains(Selections3D3D[0])) && Bingo3D1st.Any(str => str.Contains(Selections3D3D[1])) && Selections3D3D[0] != Selections3D3D[1])
+                        {
+                            DD1st += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString());
+                            check1st = true;
+                            //Globals.WriteLog("1st "+tbSelections3D.Rows[j]["COMBINATION"].ToString() + " || " + tbSelections3D.Rows[j]["QUANTITY"].ToString());
+                        }
+
+                        if (Bingo3D2nd.Any(str => str.Contains(Selections3D3D[0])) && Bingo3D2nd.Any(str => str.Contains(Selections3D3D[1])) && Selections3D3D[0] != Selections3D3D[1])
+                        {
+                            DD2nd += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString());
+                        }
+
+                        if (Bingo3D3rd.Any(str => str.Contains(Selections3D3D[0])) && Bingo3D3rd.Any(str => str.Contains(Selections3D3D[1])) && Selections3D3D[0] != Selections3D3D[1])
+                        {
+                            DD3rd += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString());
+                        }
+
+                        if (Bingo3DEnc.Any(str => str.Contains(Selections3D3D[0])) && Bingo3DEnc.Any(str => str.Contains(Selections3D3D[1])) && Selections3D3D[0] != Selections3D3D[1])
+                        {
+                            DD4th += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString());
+                        }
+
+                        if (lst.Any(str => str.Contains(Selections3D3D[0])) && lst.Any(str => str.Contains(Selections3D3D[1])) && (Selections3D3D[0] != Selections3D3D[1]))
+                        {
+                            var duplicateKeys = lst.GroupBy(x => x)
+                                                      .Where(g => g.Count() > 1)
+                                                      .Select(y => y.Key)
+                                                      .ToList();
+                            if (duplicateKeys?.Any() == false)
+                            {
+                                DD5th += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString());
+                                if (Bingo3D1st.Any(str => str.Contains(Selections3D3D[0])) || Bingo3D1st.Any(str => str.Contains(Selections3D3D[1])))
+                                {
+                                    DD5thNotDD1st += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString());
+                                }
+                            }
+                            if (duplicateKeys?.Any() == true)
+                            {
+
+                                if (duplicateKeys.Any(str => str.Contains(Selections3D3D[0])) || duplicateKeys.Any(str => str.Contains(Selections3D3D[1])))
+                                {
+                                    DD5th += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString()) * 2;
+                                    //Globals.WriteLog(tbSelections3D.Rows[j]["COMBINATION"].ToString() + " || " + tbSelections3D.Rows[j]["QUANTITY"].ToString() + "|| x 2");
+                                    if ((Bingo3D1st.Any(str => str.Contains(Selections3D3D[0])) || Bingo3D1st.Any(str => str.Contains(Selections3D3D[1]))))
+                                    {
+                                        foreach(var z in duplicateKeys)
+                                        {
+                                            if (Bingo3D1st.Contains(z.ToString()))
+                                                DD5thNotDD1st += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString());
+                                            else
+                                                DD5thNotDD1st += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString())*2;
+                                        }
+                                        
+                                        //Globals.WriteLog(tbSelections3D.Rows[j]["COMBINATION"].ToString() + " || " + tbSelections3D.Rows[j]["QUANTITY"].ToString() + "|| bỏ");
+                                    }
+
+                                }
+                                else
+                                {
+                                    DD5th += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString());
+                                    //Globals.WriteLog(tbSelections3D.Rows[j]["COMBINATION"].ToString() + " || " + tbSelections3D.Rows[j]["QUANTITY"].ToString());
+                                    if (Bingo3D1st.Any(str => str.Contains(Selections3D3D[0])) || Bingo3D1st.Any(str => str.Contains(Selections3D3D[1])))
+                                    {
+                                        DD5thNotDD1st += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString());
+                                        //Globals.WriteLog(tbSelections3D.Rows[j]["COMBINATION"].ToString() + " || " + tbSelections3D.Rows[j]["QUANTITY"].ToString() + "|| bỏ");
+                                    }
+
+                                }
+
+                            }
+
+
+
+                        }
+
+                        if (Bingo3D1st.Any(str => str.Contains(Selections3D3D[0])) || Bingo3D1st.Any(str => str.Contains(Selections3D3D[1])))
+                        {
+                            if (Selections3D3D[0] != Selections3D3D[1])
+                                DD6th += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString());
+                            else
+                                DD6th += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString()) * 2;
+
+                            if (check1st == true)
+                                DD6th++;
+
+                        }
+
+                        if (lst2.Any(str => str.Contains(Selections3D3D[0])) || lst2.Any(str => str.Contains(Selections3D3D[1])))
+                        {
+                            var duplicateKeys = lst2.GroupBy(x => x)
+                                                      .Where(g => g.Count() > 1)
+                                                      .Select(y => y.Key)
+                                                      .ToList();
+                            if (Selections3D3D[0] != Selections3D3D[1])
+                            {
+                                if (duplicateKeys?.Any() == true)
+                                {
+                                    foreach (var x in duplicateKeys)
+                                    {
+                                        if (x.Contains(Selections3D3D[0]) || x.Contains(Selections3D3D[1]))
+                                            DD7th += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString()) * 2;
+                                        else
+                                            DD7th += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString());
+                                    }
+                                }
+                                else
+                                    DD7th += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString());
+
+                            }
+
+                            else
+                            {
+                                if (duplicateKeys?.Any() == true)
+                                {
+                                    foreach (var x in duplicateKeys)
+                                    {
+                                        if (x.Contains(Selections3D3D[0]) || x.Contains(Selections3D3D[1]))
+                                            DD7th += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString()) * 4;
+                                        else
+                                            DD7th += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString()) * 2;
+                                    }
+                                }
+                                else
+                                    DD7th += int.Parse(tbSelections3D.Rows[j]["QUANTITY"].ToString()) * 2;
+                                //Globals.WriteLog(tbSelections3D.Rows[j]["COMBINATION"].ToString() + " || " + tbSelections3D.Rows[j]["QUANTITY"].ToString());
+                            }
+
+                        }
+
+
+                        break;
+                }
+            }
+
+            Globals.WriteLog("D1st :" + D1st.ToString());
+            Globals.WriteLog("D2nd :" + D2nd.ToString());
+            Globals.WriteLog("D3rd :" + D3rd.ToString());
+            Globals.WriteLog("DEnc :" + DEnc.ToString());
+
+            Globals.WriteLog("DD1st :" + DD1st.ToString());
+            Globals.WriteLog("DD2nd :" + DD2nd.ToString());
+            Globals.WriteLog("DD3rd :" + DD3rd.ToString());
+            Globals.WriteLog("DD4th :" + DD4th.ToString());
+            Globals.WriteLog("DD5th :" + DD5th.ToString());
+            Globals.WriteLog("DD6th :" + DD6th.ToString());
+            Globals.WriteLog("DD7th :" + (DD7th + DD5th - DD5thNotDD1st).ToString());
+        }
+
+
+        public static void DuplicateBingo(DateTime StartDate, DateTime EndDate)
+        {
+            foreach (DateTime day in Globals.EachDay(StartDate, EndDate))
+            {
+                var date = day.ToString("yyyyMMdd");
+                DataTable tbBingo3D = Globals.QueryToDataTable("SELECT NUMBER FROM CORE_DL WHERE IFNULL(NUMBER,'') <> '' AND  LIATYPE = 6 AND DRAWDATE =" + "'" + date + "' Order by id");
+                string[] Bingo3D1st;
+                string[] Bingo3D2nd;
+                string[] Bingo3D3rd;
+                string[] Bingo3DEnc;
+
+                if (tbBingo3D.Rows.Count > 0)
+                {
+                    Bingo3D1st = tbBingo3D.Rows[0]["NUMBER"].ToString().Split(' ');
+                    Bingo3D2nd = tbBingo3D.Rows[1]["NUMBER"].ToString().Split(' ');
+                    Bingo3D3rd = tbBingo3D.Rows[2]["NUMBER"].ToString().Split(' ');
+                    Bingo3DEnc = tbBingo3D.Rows[3]["NUMBER"].ToString().Split(' ');
+                    List<string> lst = new List<string>();
+                    lst.AddRange(Bingo3D1st);
+                    lst.AddRange(Bingo3D2nd);
+                    lst.AddRange(Bingo3D3rd);
+                    lst.AddRange(Bingo3DEnc);
+                    lst.ToList();
+                    var duplicateKeys = lst.GroupBy(x => x)
+                        .Where(group => group.Count() > 1)
+                        .Select(group => group.Key);
+
+                    foreach (var s in duplicateKeys)
+                        Globals.WriteLog(date + " || " + s.ToString());
+                }
+
+
+
+
+
+            }
         }
     }
 }

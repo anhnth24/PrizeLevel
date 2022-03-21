@@ -18,6 +18,9 @@ namespace PrizeLevel.Constants
         public const string getSelections3DPro = "SELECT COMBINATION,QUANTITY FROM CORE_DCS_3D_PRO where quantity > 0  and CAST('20'|| RIGHT(FILENAME,6) AS DATE) = ";
 
         public const string getKenoDraw = "SELECT DISTINCT DRAWID FROM CORE_DL WHERE  LIATYPE = 5 AND DRAWDATE =";
+
+        public const string getBingo3D = "SELECT NUMBER FROM CORE_DL WHERE IFNULL(NUMBER,'') <> '' AND  LIATYPE = 6 AND DRAWDATE =";
+        public const string getSelections3D = "SELECT COMBINATION,QUANTITY FROM CORE_DCS_3D where quantity > 0  and CAST('20'|| RIGHT(FILENAME,6) AS DATE) = ";
         //public const string getBingoKeno = ;
     }
 }

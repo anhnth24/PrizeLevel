@@ -22,11 +22,22 @@ namespace PrizeLevel
 
         public void OnDebug()
         {
+            DateTime StartDate;
+            DateTime EndDate;
+
+            string fDate = "01/01/2021";
+            string tDate = "12/30/2021";
+
+            StartDate = DateTime.Parse(fDate);
+            EndDate = DateTime.Parse(tDate);
             //debug
             //Action.SelectionToPrizeLevel_Game645("20210101");
             //Action.SelectionToPrizeLevel_Game655("20210603");
             //Action.SelectionToPrizeLevel_Game3DPro("20211214");
-            Action.SelectionToPrizeLevel_GameKeno("20211214");
+            //Action.SelectionToPrizeLevel_GameKeno("20211214");
+            Action.SelectionToPrizeLevel_Game3D("20210115");
+
+            //Action.DuplicateBingo(StartDate,EndDate);
         }
 
         protected override void OnStart(string[] args)
