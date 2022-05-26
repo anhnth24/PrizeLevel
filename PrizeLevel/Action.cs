@@ -26,7 +26,7 @@ namespace PrizeLevel
             int prize3 = 0;
             int prize2 = 0;
             int prize1 = 0;
-            DataTable dtBingo645 = Globals.QueryToDataTable(Query.getBingo645 + "'" + Date + "'");
+            DataTable dtBingo645 = Globals.QueryToDataTable(Query.getBingo645 +   "'" + Date + "'");
             DataTable dtSelections645 = Globals.QueryToDataTable(Query.getSelections645 + "'" + Date + "'");
             Globals.WriteLog("Start Mega 645");
             if (dtBingo645.Rows.Count > 0 && dtSelections645.Rows.Count > 0)

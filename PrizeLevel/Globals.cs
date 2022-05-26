@@ -130,7 +130,6 @@ namespace PrizeLevel
                 return "Even 11-12";
             if (combination == "91")
                 return "Odd 11-12";
-
             else
                 return "Selected";
         }
